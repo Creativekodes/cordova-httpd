@@ -949,24 +949,20 @@ public class NanoHTTPD
 				else if ( allowDirectoryListing && f.canRead() )
 				{
 					String[] files = f.list();
-					String msg = "<html><style>body {background: #f6f6f6;text-transform: capitalize;}b {border: 1px solid #8c8a95;background: #8c8a95;color: #fff;padding: 4px;border-radius: 4px;cursor: pointer;display: block;margin-bottom: 12px;}h1 {text-align: center;font-size: 21px;color: #487cd7;text-transform: capitalize;}b a {text-decoration: none;color: #64ecc5;text-transform: capitalize;}b br {display: none;}.file {margin-bottom: 10px;display: block;color: #4541e7;font-size: 18px;text-decoration: none;text-transform: capitalize;}</style><body><h1>Directory " + uri + "</h1><br/>";
+					String msg = "<html><style>body {background: #f6f6f6;text-transform: capitalize;}b {border: 1px solid #8c8a95;background: #8c8a95;color: #fff;padding: 4px;border-radius: 4px;cursor: pointer;display: block;margin-bottom: 12px;}h1 {text-align: center;font-size: 21px;color: #487cd7;text-transform: capitalize;}b a {text-decoration: none;color: #64ecc5;text-transform: capitalize;}b br {display: none;}.file {margin-bottom: 10px;display: block;color: #4541e7;font-size: 18px;text-decoration: none;text-transform: capitalize;}</style><body><h1>Directory: " + uri + "</h1><br/>";
 
-					if ( uri.length() > 1 )
-					{
+					if ( uri.length() > 1 ){
 						String u = uri.substring( 0, uri.length()-1 );
 						int slash = u.lastIndexOf( '/' );
 						if ( slash >= 0 && slash  < u.length())
-							msg += "<b><a href=\"" + uri.substring(0, slash+1) + "\">..</a></b><br/>";
+									msg += "<b><a href=\"" + uri.substring(0, slash+1) + "\"><- Back</a></b><br/>";
 					}
 
-					if (files!=null)
-					{
-						for ( int i=0; i<files.length; ++i )
-						{
+					if (files!=null) {
+						for ( int i=0; i<files.length; ++i ) {
 							AndroidFile curFile = new AndroidFile( f, files[i] );
 							boolean dir = curFile.isDirectory();
-							if ( dir )
-							{
+							if (dir) {
 								msg += "<b>";
 								files[i] += "/";
 							}
@@ -974,17 +970,21 @@ public class NanoHTTPD
 							// Show file size
 							if ( curFile.isFile()) {
 								long len = curFile.length();
-								msg += "<a class='file' href=\"" + encodeUri( uri + files[i] ) + "\">" + files[i] + " &nbsp;<font size=2>(";
+								    String pathz = encodeUri(uri + files[i]);
+									String extension = pathz.substring(pathz.lastIndexOf(".") + 1, pathz.length());
+									msg += "<a class='file' alt='"+extension+"' href=\"" + encodeUri( uri + files[i] ) + "\" download>" + files[i] + " &nbsp;<font size=2>(";
 								if ( len < 1024 )
 									msg += len + " bytes";
 								else if ( len < 1024 * 1024 )
 									msg += len/1024 + "." + (len%1024/10%100) + " KB";
 								else
 									msg += len/(1024*1024) + "." + len%(1024*1024)/10%100 + " MB";
-
-								msg += ")</font></a>";
+									msg += ")</font></a>";
 							} else {
-								msg += "<a class='file' href=\"" + encodeUri( uri + files[i] ) + "\">" + files[i] + "</a>";
+								    String pathz = encodeUri(uri + files[i]);
+									String extension = pathz.substring(pathz.lastIndexOf(".") + 1, pathz.length());
+									
+									msg += "<a class='file' alt='"+extension+"' href=\"" + encodeUri( uri + files[i] ) + "\" download>" + files[i] + "</a>";
 							}
 							
 							if ( dir ) msg += "</b>";
